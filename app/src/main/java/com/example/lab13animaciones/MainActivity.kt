@@ -30,7 +30,8 @@ class MainActivity : ComponentActivity() {
             //AnimatedVisibility()
             //AnimateColor()
             //AnimateSizeAndPosition()
-            AnimatedContent()
+            //AnimatedContent()
+            AnimatedScreen()
         }
     }
 }
