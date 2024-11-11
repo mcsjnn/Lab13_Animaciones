@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AnimatedVisibility()
+            AnimateColor()
         }
     }
 }
@@ -58,6 +60,27 @@ fun AnimatedVisibility() {
     }
 }
 
+@Composable
+fun AnimateColor() {
+    var isBlue by remember { mutableStateOf(true) }
+    val color by animateColorAsState(targetValue = if (isBlue) Color.Blue else Color.Green,
+        label = ""
+    )
 
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Button(onClick = { isBlue = !isBlue }) {
+            Text(text = "Cambio de Color")
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color)
+                .size(100.dp)
+        )
+    }
+}
 
 
