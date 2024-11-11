@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
@@ -21,8 +22,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            AnimatedVisibility()
-            AnimateColor()
+            //AnimatedVisibility()
+            //AnimateColor()
+            AnimateSizeAndPosition()
         }
     }
 }
@@ -82,5 +84,47 @@ fun AnimateColor() {
         )
     }
 }
+
+
+@Composable
+fun AnimateSizeAndPosition() {
+    var isLarge by remember { mutableStateOf(false) }
+    var moveDirection by remember { mutableIntStateOf(0) }
+
+    val size by animateDpAsState(targetValue = if (isLarge) 200.dp else 100.dp, label = "")
+
+    val directions = listOf(
+        Pair(200.dp, 0.dp),
+        Pair(0.dp, 200.dp),
+        Pair((-200).dp, 0.dp),
+        Pair(0.dp, (-200).dp)
+    )
+
+    val (offsetX, offsetY) = directions[moveDirection % directions.size]
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            isLarge = !isLarge
+            moveDirection += 1
+        }) {
+            Text(text = "Cambiar Tamaño y Mover")
+        }
+
+        Box(
+            modifier = Modifier
+                .size(size)
+                .offset(x = offsetX, y = offsetY)
+                .background(Color.Red)
+        )
+    }
+}
+
+
+
+
 
 
