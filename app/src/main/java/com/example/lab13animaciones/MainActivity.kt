@@ -18,13 +18,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+
+enum class Estado { CARGANDO, CONTENIDO, ERROR }
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             //AnimatedVisibility()
             //AnimateColor()
-            AnimateSizeAndPosition()
+            //AnimateSizeAndPosition()
+            AnimatedContent()
         }
     }
 }
@@ -122,6 +128,49 @@ fun AnimateSizeAndPosition() {
         )
     }
 }
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun AnimatedContent() {
+    var estado by remember { mutableStateOf(Estado.CARGANDO) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                estado = when (estado) {
+                    Estado.CARGANDO -> Estado.CONTENIDO
+                    Estado.CONTENIDO -> Estado.ERROR
+                    Estado.ERROR -> Estado.CARGANDO
+                }
+            },
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(text = "Cambiar Estado")
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        AnimatedContent(
+            targetState = estado,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(durationMillis = 600)) with fadeOut(animationSpec = tween(durationMillis = 600))
+            }, label = ""
+        ) { estado ->
+            when (estado) {
+                Estado.CARGANDO -> Text("Cargando...")
+                Estado.CONTENIDO -> Text("Contenido Listo")
+                Estado.ERROR -> Text("Error de Carga")
+            }
+        }
+    }
+}
+
 
 
 
